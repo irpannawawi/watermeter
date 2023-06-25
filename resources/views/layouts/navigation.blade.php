@@ -17,16 +17,9 @@
                 @if (Auth::user()->role == 'admin')
                     
                 <li>
-                    <a href="calendar.html" class=" waves-effect">
+                    <a href="{{route('users')}}" class=" waves-effect">
                         <i class="fa fa-users"></i>
                         <span>Pengguna</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="calendar.html" class=" waves-effect">
-                        <i class="ti-user"></i>
-                        <span>Admin</span>
                     </a>
                 </li>
                 @else

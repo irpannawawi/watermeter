@@ -9,17 +9,17 @@
         <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
         <meta content="Themesbrand" name="author">
         <!-- App favicon -->
-        <link rel="shortcut icon" href="assets/images/favicon.ico">
+        <link rel="shortcut icon" href="{{url('assets')}}/images/favicon.ico">
     
         <!-- Bootstrap Css -->
-        <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
+        <link href="{{url('assets')}}/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
         <!-- Icons Css -->
-        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="{{url('assets')}}/css/icons.min.css" rel="stylesheet" type="text/css">
     
-        <link href="assets/libs/chartist/chartist.min.css" rel="stylesheet" />
+        <link href="{{url('assets')}}/libs/chartist/chartist.min.css" rel="stylesheet" />
 
         <!-- App Css-->
-        <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css">
+        <link href="{{url('assets')}}/css/app.min.css" id="app-style" rel="stylesheet" type="text/css">
     
     </head>
 
@@ -39,7 +39,7 @@
             <div class="main-content">
 
                 <div class="page-content">
-                    <div class="container-fluid">
+                    <div class="container">
                         @yield('content')
                     </div> <!-- container-fluid -->
                 </div>
@@ -83,7 +83,7 @@
 
                 <div class="p-4">
                     <div class="mb-2">
-                        <img src="assets/images/layouts/layout-1.jpg" class="img-fluid img-thumbnail" alt="">
+                        <img src="{{url('assets')}}/images/layouts/layout-1.jpg" class="img-fluid img-thumbnail" alt="">
                     </div>
                     <div class="form-check form-switch mb-3">
                         <input type="checkbox" class="form-check-input theme-choice" id="light-mode-switch" checked />
@@ -91,19 +91,19 @@
                     </div>
     
                     <div class="mb-2">
-                        <img src="assets/images/layouts/layout-2.jpg" class="img-fluid img-thumbnail" alt="">
+                        <img src="{{url('assets')}}/images/layouts/layout-2.jpg" class="img-fluid img-thumbnail" alt="">
                     </div>
                     <div class="form-check form-switch mb-3">
-                        <input type="checkbox" class="form-check-input theme-choice" id="dark-mode-switch" data-bsStyle="assets/css/bootstrap-dark.min.css" 
-                            data-appStyle="assets/css/app-dark.min.css" />
+                        <input type="checkbox" class="form-check-input theme-choice" id="dark-mode-switch" data-bsStyle="{{url('assets')}}/css/bootstrap-dark.min.css" 
+                            data-appStyle="{{url('assets')}}/css/app-dark.min.css" />
                         <label class="form-check-label" for="dark-mode-switch">Dark Mode</label>
                     </div>
     
                     <div class="mb-2">
-                        <img src="assets/images/layouts/layout-3.jpg" class="img-fluid img-thumbnail" alt="">
+                        <img src="{{url('assets')}}/images/layouts/layout-3.jpg" class="img-fluid img-thumbnail" alt="">
                     </div>
                     <div class="form-check form-switch mb-5">
-                        <input type="checkbox" class="form-check-input theme-choice" id="rtl-mode-switch" data-appStyle="assets/css/app-rtl.min.css" />
+                        <input type="checkbox" class="form-check-input theme-choice" id="rtl-mode-switch" data-appStyle="{{url('assets')}}/css/app-rtl.min.css" />
                         <label class="form-check-label" for="rtl-mode-switch">RTL Mode</label>
                     </div>
                     <div class="d-grid">
@@ -119,15 +119,15 @@
         {{-- <div class="rightbar-overlay"></div> --}}
 
         <!-- JAVASCRIPT -->
-        <script src="assets/libs/jquery/jquery.min.js"></script>
-        <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/libs/metismenu/metisMenu.min.js"></script>
-        <script src="assets/libs/simplebar/simplebar.min.js"></script>
-        <script src="assets/libs/node-waves/waves.min.js"></script>
+        <script src="{{url('assets')}}/libs/jquery/jquery.min.js"></script>
+        <script src="{{url('assets')}}/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="{{url('assets')}}/libs/metismenu/metisMenu.min.js"></script>
+        <script src="{{url('assets')}}/libs/simplebar/simplebar.min.js"></script>
+        <script src="{{url('assets')}}/libs/node-waves/waves.min.js"></script>
 
         @yield('scripts')
 
-        <script src="assets/js/app.js"></script>
+        <script src="{{url('assets')}}/js/app.js"></script>
 
     </body>
 </html>
