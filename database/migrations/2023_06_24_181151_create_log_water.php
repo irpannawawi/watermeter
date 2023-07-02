@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('log_water', function (Blueprint $table) {
             $table->id();
-            $table->string('debit_air', 50);
+            $table->float('pemakaian_air', 4, 2);
             $table->string('status');
             $table->string('user_id');
             $table->timestamps();

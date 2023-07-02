@@ -22,9 +22,28 @@
                         <span>Pengguna</span>
                     </a>
                 </li>
+                
+                <li>
+                    <a href="{{route('pelanggan')}}" class=" waves-effect">
+                        <i class="ti-home"></i>
+                        <span>Pelanggan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{route('tagihan-pengguna')}}" class=" waves-effect">
+                        <i class="ti-money"></i>
+                        <span>Tagihan pengguna</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{route('log')}}" class="waves-effect">
+                        <i class="fa fa-history"></i>
+                        <span>Log</span>
+                    </a>
+                </li>
                 @else
                 <li>
-                    <a href="calendar.html" class=" waves-effect">
+                    <a href="{{route('tagihan')}}" class=" waves-effect">
                         <i class="ti-money"></i>
                         <span>Tagihan</span>
                     </a>

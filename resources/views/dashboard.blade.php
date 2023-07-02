@@ -16,10 +16,19 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">Aktivitas</h4>
                 <div class="row">
+                    @if (strtolower($peringatan) != 'baik')
+                    <div class="col">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Peringatan!</strong> {{$peringatan}}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                          </div>
+                    </div>
+                    @endif
+                </div>
+                <div class="row">
                     <div class="col-lg-7">
                         <div>
-                            <div id="chart-with-area" class="ct-chart earning ct-golden-section">
-                            </div>
+                            <div style="width: 100%;"><canvas id="chart"></canvas></div>
                         </div>
                     </div>
                     <div class="col-lg-5">
@@ -27,14 +36,14 @@
                             <div class="col-md-6">
                                 <div class="text-center">
                                     <p class="text-muted mb-4">Bulan ini</p>
-                                    <h3>{{$penggunaan[0]->debit_air}} L</h3>
+                                    <h3>{{$penggunaan}} L</h3>
                                     <p class="text-muted mb-5">Penggunaan air anda bulan ini.</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="text-center">
-                                    <p class="text-muted mb-4">Bulan lalu</p>
-                                    <h3>{{$penggunaan_lalu[0]->debit_air}} L</h3>
+                                    <p class="text-muted mb-4">Tagihan bulan ini</p>
+                                    <h4>Rp. {{number_format($penggunaan*2000, 0,0)}},-</h4>
                                     <p class="text-muted mb-5">Penggunaan air anda bulan lalu.</p>
                                 </div>
                             </div>
@@ -55,42 +64,32 @@
                 </div>
                 <div class="wid-peity mb-4">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div>
-                                <p class="text-muted">Debit Air</p>
-                                <h5 class="mb-4">1,542</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="wid-peity mb-4">
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-9">
                             <div>
                                 <p class="text-muted">Volume Air</p>
-                                <h5 class="mb-4">6,451</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-4">
+                                <h5 class="mb-4">{{$debit_terakhir}} Liter</h5>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="">
+                <!--
+                <div class="wid-peity mb-4">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-9">
                             <div>
-                                <p class="text-muted">Marketing</p>
-                                <h5>84,574</h5>
+                                <p class="text-muted">Debit Air</p>
+                                <b class="mb-4">n/a Liter/detik</b>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-4">
+                    </div>
+                </div>
+            -->
+                <div class="">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div>
+                                <p class="text-muted">Penggunaan bulan lalu</p>
+                                <h5>{{$penggunaan_lalu}} Liter</h5>
                             </div>
                         </div>
                     </div>
@@ -104,20 +103,35 @@
     <!-- Peity chart-->
     <script src="assets/libs/peity/jquery.peity.min.js"></script>
 
-    <!-- Plugin Js-->
-    <script src="assets/libs/chartist/chartist.min.js"></script>
-    <script src="assets/libs/chartist-plugin-tooltips/chartist-plugin-tooltip.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        var data = {
-        // A labels array that can contain any sort of values
-        labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu', 'Minggu'],
-        // Our series array that contains series objects or in this case series data arrays
-        series: [
-            [400, 200, 453, 223, 321, 123,333]
-        ]
-        };
+        url = '{{route('get_grafik')}}'
+        let dataset;
+        $.get(url, {}, function(data){
+            // data = JSON.parse(data)
+        })
+        dataset = <?=json_encode($logs['series'])?>
 
-        Chartist.Line('.ct-chart', data, {showArea:true});
+        label = <?=json_encode($logs['labels'])?>
+
+        ctx = document.getElementById('chart')
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+            labels: label,
+            datasets: [{
+                data: dataset,
+                borderWidth: 3
+            }]
+            },
+            options: {
+                responsive: true,
+                fill: 'start',
+                title: {
+                    display: false,
+                }
+            },
+        });
+        
     </script>
 @endsection

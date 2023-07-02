@@ -32,6 +32,19 @@
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
+
+            
+
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="max-w-xl">
+                    <h3>Api Token</h3>
+                    <form method="post" action="{{ route('profile.generate_token') }}" class="mt-6 space-y-6">
+                        @csrf
+                        <input type="text" name="token" value="{{Auth::user()->api_token}}" id="token" class="form-control" >
+                        <x-primary-button>{{ __('Generate') }}</x-primary-button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
