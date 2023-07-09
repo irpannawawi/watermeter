@@ -52,7 +52,7 @@ class Dashboard_controller extends Controller
                 'penggunaan_lalu'=>Log::where('created_at', 'like', $last_month->format('Y-m').'%')->get()->sum('pemakaian_air'),
                 'debit_terakhir'=>Log::where('user_id', Auth::user()->id)->latest()->get()[0]->pemakaian_air,
             ];
-            $data['peringatan'] = Log::where('user_id', Auth::user()->id)->latest()->get()[0]->status;
+            $data['peringatan'] = Log::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get()[0]->status;
             return view('dashboard', $data);
         }
     }

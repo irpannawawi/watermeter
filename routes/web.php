@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/users', [Users_controller::class, 'store'])->name('users.store');
     Route::get('/users/{id}', [Users_controller::class, 'edit'])->name('users.edit');
     Route::put('/users', [Users_controller::class, 'update'])->name('users.update');
+    Route::delete('/users', [Users_controller::class, 'delete'])->name('users.delete');
     // log
     Route::get('/log', [Log_controller::class, 'view_log'])->name('log');
     Route::get('/grafik_data', [Log_controller::class, 'grafik_data'])->name('get_grafik');

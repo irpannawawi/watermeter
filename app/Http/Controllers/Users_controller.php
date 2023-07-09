@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
+use App\Models\Tagihan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -50,5 +52,15 @@ class Users_controller extends Controller
         if($user->save()){
             return redirect()->route('users')->with('success', 'Berhasil merubah user');
         }
+    }
+
+    public function delete(Request $request)
+    {
+        $id = $request->id;
+        
+        Log::where('user_id', $id)->delete();
+        Tagihan::where('user_id', $id)->delete();
+        User::where('id', $id)->delete();
+        return redirect()->back();
     }
 }

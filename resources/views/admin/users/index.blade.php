@@ -51,8 +51,13 @@
                                     <td>{{ strtoupper($user->role) }}</td>
                                     <td>{{ $user->id }}</td>
                                     <td>
-                                        <a class="btn btn-sm btn-warning" href="{{route('users.edit', ['id'=>$user->id])}}"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-sm btn-danger" href="#"><i class="fa fa-trash"></i></a>
+                                        <form id="formDelete" method="post" action="{{route('users.delete')}}">
+                                            @csrf
+                                            @method('delete')
+                                            <a class="btn btn-sm btn-warning" href="{{route('users.edit', ['id'=>$user->id])}}"><i class="fa fa-edit"></i></a>
+                                            <input type="hidden" value="{{$user->id}}" name="id">
+                                        <button type="submit" class="btn btn-sm btn-danger" href="#"><i class="fa fa-trash"></i></button>
+                                    </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -153,4 +158,13 @@
 
     
 @endsection
-
+@section('scripts')
+<script>
+    document.getElementById("formDelete").addEventListener("submit", function(event){
+        event.preventDefault()
+        if(confirm('Hapus data?')){
+            document.getElementById("formDelete").submit()
+        }
+    });
+</script>
+@endsection
