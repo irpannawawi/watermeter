@@ -76,4 +76,4 @@ Account
 
 ## Authors
 
--   [@sndvny](https://www.github.com/sndvny)
+-   [@sandemoid](https://www.github.com/sandemoid)
