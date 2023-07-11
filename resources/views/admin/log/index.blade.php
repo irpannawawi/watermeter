@@ -45,7 +45,7 @@
                                     <td>{{ $n++ }}</td>
                                     <td>{{ $log->created_at }}</td>
                                     <td>{{ $log->user->name }}</td>
-                                    <td>{{ $log->pemakaian_air }}</td>
+                                    <td>{{ $log->pemakaian_air }} Liter/menit</td>
                                     <td>{{ $log->status }}</td>
                                 </tr>
                             @endforeach

@@ -5,7 +5,7 @@
         <div class="col-md-8">
             <h6 class="page-title">Dashboard</h6>
             <ol class="breadcrumb m-0">
-                <li class="breadcrumb-item active">Welcome to HPW05 Dashboard{{$peringatan}}</li>
+                <li class="breadcrumb-item active">Welcome to HPW05 Dashboard</li>
             </ol>
         </div>
     </div>
@@ -36,7 +36,7 @@
                             <div class="col-md-6">
                                 <div class="text-center">
                                     <p class="text-muted mb-4">Bulan ini</p>
-                                    <h3>{{$penggunaan}} L</h3>
+                                    <h3>{{$penggunaan}} <small>Liter/Menit</small></h3>
                                     <p class="text-muted mb-5">Penggunaan air anda bulan ini.</p>
                                 </div>
                             </div>

@@ -16,13 +16,13 @@ class Dashboard_controller extends Controller
 {
     //
     public function index(){
-        
         if(Auth::user()->role == 'admin'){
             $data = [
                 'jumlah_pengguna'=> User::get()->count(),
             ];
             return view('dashboard_admin', $data);
         }else{
+            // dd(Auth::user()->id);
             $last_month = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
             $last_month->modify('-1 month');
             $grafik_data = [
@@ -36,23 +36,30 @@ class Dashboard_controller extends Controller
                     date('d-m-Y', strtotime('now')),
                 ],
                 'series'=>[
-                    Log::where('created_at', 'like', date('Y-m-d', strtotime('-6 days')).'%')->get()->sum('pemakaian_air'),
-                    Log::where('created_at', 'like', date('Y-m-d', strtotime('-5 days')).'%')->get()->sum('pemakaian_air'),
-                    Log::where('created_at', 'like', date('Y-m-d', strtotime('-4 days')).'%')->get()->sum('pemakaian_air'),
-                    Log::where('created_at', 'like', date('Y-m-d', strtotime('-3 days')).'%')->get()->sum('pemakaian_air'),
-                    Log::where('created_at', 'like', date('Y-m-d', strtotime('-2 days')).'%')->get()->sum('pemakaian_air'),
-                    Log::where('created_at', 'like', date('Y-m-d', strtotime('-1 days')).'%')->get()->sum('pemakaian_air'),
-                    Log::where('created_at', 'like', date('Y-m-d', strtotime('now')).'%')->get()->sum('pemakaian_air'),
+                    Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m-d', strtotime('-6 days')).'%')->get()->sum('pemakaian_air'),
+                    Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m-d', strtotime('-5 days')).'%')->get()->sum('pemakaian_air'),
+                    Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m-d', strtotime('-4 days')).'%')->get()->sum('pemakaian_air'),
+                    Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m-d', strtotime('-3 days')).'%')->get()->sum('pemakaian_air'),
+                    Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m-d', strtotime('-2 days')).'%')->get()->sum('pemakaian_air'),
+                    Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m-d', strtotime('-1 days')).'%')->get()->sum('pemakaian_air'),
+                    Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m-d', strtotime('now')).'%')->get()->sum('pemakaian_air'),
                 ]
             ];
             // dd(json_encode($grafik_data));
             $data = [
                 'logs'=> $grafik_data,
-                'penggunaan'=>Log::where('created_at', 'like', date('Y-m').'%')->get()->sum('pemakaian_air'),
-                'penggunaan_lalu'=>Log::where('created_at', 'like', $last_month->format('Y-m').'%')->get()->sum('pemakaian_air'),
-                'debit_terakhir'=>Log::where('user_id', Auth::user()->id)->latest()->get()[0]->pemakaian_air,
+                'penggunaan'=>Log::where('user_id', Auth::user()->id)->where('created_at', 'like', date('Y-m').'%')->get()->sum('pemakaian_air'),
+                'penggunaan_lalu'=>Log::where('user_id', Auth::user()->id)->where('created_at', 'like', $last_month->format('Y-m').'%')->get()->sum('pemakaian_air'),
             ];
-            $data['peringatan'] = Log::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get()[0]->status;
+            if(Log::where('user_id', Auth::user()->id)->latest()->get()->count() > 0){
+
+                $data['debit_terakhir'] = Log::where('user_id', Auth::user()->id)->latest()->get()[0]->pemakaian_air;
+                $data['peringatan'] = Log::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get()[0]->status;
+            }else{
+                
+                $data['peringatan'] = 'baik';
+                $data['debit_terakhir'] = 0;
+            }
             return view('dashboard', $data);
         }
     }

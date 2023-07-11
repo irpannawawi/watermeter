@@ -6,8 +6,9 @@
 
 SoftwareSerial DataSerial(16, 17);
 unsigned long prevMillis = 0;
-const long interval = 3000;
+const long interval = 30000;
 String arrData[2];
+String note = "Potensi%20Kebocoran%20Terdeteksi";
 float literCounter = 0.0;
 float lastSentCounter = 0.0; // Menyimpan nilai literCounter terakhir yang dikirim
 const float literThreshold = 1.0; // Batas keluaran satu liter
@@ -19,8 +20,12 @@ int model = 0;
 
 const char* ssid = "A5 2017";
 const char* password = "bimabima7";
-const char* serverUrl = "https://smartwatermeter.my.id";
-const char* apiKey = "$2y$10$9LNYsBpLHo.LfNguG4NW3e5J8sfUlzBowWwgYRpOfr.OnA4GDKzCe";
+const char* serverUrl = "http://smartwatermeter.my.id";
+const char* apiKey = "$2y$10$nSm3cFQXLVGUqCRJLhnbBe..PKRZg//R2S/Hi5a82Q99p9JuYLkyy";
+
+const char* email = "bima14pro@gmail.com";
+const char* user_id = "4";
+const char* passwordParam = "bima7";
 
 void setup() {
   Serial.begin(9600);
@@ -65,7 +70,7 @@ void loop() {
         literCounter += keluaran;
 
         if (literCounter >= literThreshold && (currMillis - lastNotificationTime >= notificationInterval)) {
-          Serial.println("Potensi Kebocoran Terdeteksi");
+          Serial.println(note);
 
           // Kirim HTTP request ke server API
           sendHttpRequest();
@@ -78,6 +83,7 @@ void loop() {
           EEPROM.commit();
           EEPROM.end();
         }
+        literCounter = 0;
       }
       arrData[0] = "";
       arrData[1] = "";
@@ -92,23 +98,29 @@ void sendHttpRequest() {
 
   String url = String(serverUrl) + "/api/log_pemakaian"; // Ganti dengan endpoint yang sesuai di server Anda
 
+  // Membangun URL dengan parameter
+  url += "?pemakaian_air=" + String(literCounter);
+  url += "&status=" + String(note) ;
+  url += "&user_id=" + String(user_id);
+  url += "&email=" + String(email);
+  url += "&password=" + String(passwordParam);
+
+  Serial.println("URL :"+String(url));
   // Mengatur header untuk autentikasi API key
   http.begin(client, url);
   http.addHeader("Authorization", "Bearer " + String(apiKey));
   http.addHeader("Content-Type", "application/json");
 
-  // Membuat payload JSON
-  DynamicJsonDocument payload(128);
-  payload["pemakaian_air"] = literCounter;
-
-  // Mengirimkan permintaan POST dengan payload JSON
-  String payloadString;
-  serializeJson(payload, payloadString);
-  int httpCode = http.POST(payloadString);
-  Serial.println(httpCode);
- 
+  // Mengirimkan permintaan GET tanpa payload
+  int httpCode = http.GET();
+//  Serial.println("HTTP Code: " + String(httpCode));
+  if (httpCode > 0) {
     String response = http.getString();
     Serial.println("HTTP Response: " + response);
+  } else {
+    Serial.println("HTTP Request failed");
+  }
 
   http.end();
+
 }

@@ -47,7 +47,7 @@
                                     <td>{{ $p->name }}</td>
                                     <td>{{ $p->id }}</td>
                                     <td>{{ $p->email }}</td>
-                                    <td>{{ $p->log->sum('pemakaian_air') }} Liter</td>
+                                    <td>{{ $p->log->sum('pemakaian_air') }} Liter/menit</td>
                                     <td>Rp. {{ number_format($p->log->sum('pemakaian_air')*2000, 0,0,'.') }},-</td>
                                 </tr>
                             @endforeach

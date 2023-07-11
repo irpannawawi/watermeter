@@ -38,94 +38,79 @@ class Log_controller extends Controller
         $last_data = Log::where('user_id', $uid)->latest();
         
         // cek jika data lama kosong
-        if(Log::where('user')){
-            if($pemakaian>0) Log::insert(['pemakaian_air'=>$pemakaian, 'status'=>$status, 'user_id'=>$uid]);
-        }
-        
-        // +================================================================
-        if($user->count()<1){
-            return response()->json(['status'=>'Gagal', 'message'=>'unauthenticated user']);
-        }else{
-            if(Hash::check($password, $user[0]->password) && $user[0]->role == 'admin'){
-                $last_data = Log::where('user_id', $request->user_id)->latest();
-
-                if($this->cek_data_lama($uid, $pemakaian, $status)){
-
-                }
-                // assign tanggal data sblmnya dan tgl baru
-                $ld = null;
-                if($last_data->count()>0){
-                    $ld = $last_data->get()[0];
-                    $upd = Log::where('user_id', $request->user_id)->latest()->get();
-                    $upd[0]->created_at = date('Y-m-d H:i:s', strtotime('now'));
-                    $upd[0]->save();
-                    
-                }
-                $date_now = date('Y-m-d H:i:s', strtotime('now'));
-                if($ld == null)
-                {
-                    $date_last = new DateTime();
-                    $date_last->modify('-30 seconds');
-                }else{
-
-                    $date_last = new DateTime($ld->created_at);
-                    $date_last->modify('+30 seconds');
-                }
-
-                // cek jika State blm ada
-                if(State::where('user_id',$uid)->get()->count()<1){
-                    State::create(['user_id'=>$uid, 'state'=>0])->save();
-                    
-                }
-                
-
-                // cek State jika data sebelumnya beda maka rubah state
-                $state = False;
-                if($last_data->get()[0]->pemakaian_air != $pemakaian || $date_now < $date_last->format('Y-m-d H:i:s')){
-                    $state = State::where('user_id',$uid)->get()[0];
-                    if($state->state == True){
-                        $state->state = False;
-                    }else{
-                        $state->state = True;
-                    }
-                    $state->save();
-                }else{
-                    return response()->json(['status'=>'not modified, last data same as current data']); 
-                    die;
-                }
-        
-                // if State != on don't do anything
-                if($state->state == False || $state->state == null ){
-                    return response()->json(['status'=>'not modified, state off']); 
-                    die;
-                }
-                // cek jika sinyal pulse pemakaian air  ==  0 jangan input
-                if($pemakaian == 0){
-                    return response()->json(['status'=>'not modified, pulse zero']); 
-                    die;
-                }
-                
-                
-                
-                // dd(['ld'=>$ld->created_at, 'dl'=>$date_last->format('Y-m-d H:i:s'), 'dn'=>$date_now]);
-                if($date_now < $date_last->format('Y-m-d H:i:s')){
-                
-                    return response()->json(['status'=>'not modified, to many data']);
-                }else{
-
-                    $data = [
-                        'pemakaian_air'=>$request->query('pemakaian_air'),
-                        'status'=>$request->query('status'),
-                        'user_id'=>$request->query('user_id'),
-                    ];
-                    
-                    Log::create($data);
-                    return response()->json(['status'=>'Ok', 'data'=>$data]);
-                }
+        if(Log::where('user_id', $uid)->get()->count() == 0){
+            if($pemakaian>0){
+                Log::insert(['pemakaian_air'=>$pemakaian, 'status'=>$status, 'user_id'=>$uid]);
             }else{
-                return response()->json(['status'=>'Gagal', 'message'=>'unauthenticated user']);
+                return response()->json(['status'=>'not modified', 'message'=>'pemakaian air 0']); 
+                die;
             }
+
         }
+        // assign tanggal data sblmnya dan tgl baru
+        $ld = null;
+        if($last_data->count()>0){
+            $ld = $last_data->get()[0];
+            // $upd = Log::where('user_id', $request->user_id)->latest()->get();
+            // $upd[0]->created_at = date('Y-m-d H:i:s', strtotime('now'));
+            // $upd[0]->save();
+            // return response()->json(['status'=>'Updated', 'message'=>'data lama kosong insert baru', 'data'=>$upd[0]]);
+            
+        }
+
+        $date_now = new DateTime();
+
+        if($ld == null)
+        {
+            $last_data_time = new DateTime();
+            $last_data_time->modify('-75 seconds');
+        }else{
+            
+            $last_data_time = new DateTime($ld->created_at);
+            $last_data_time->modify('+75 seconds');
+        }
+        
+        // jika data baru datang < 75  second dari data terakhir di input 
+        // maka jangan input ulang hanya update
+        if($date_now < $last_data_time){
+            // jika data kurang dari 75 dtk yang lalu update hanya jika data air lebih besar
+            if($last_data->get()[0]->pemakaian_air < $pemakaian){
+                $toupdatedata = Log::where('user_id', $request->user_id)->latest()->get()[0];
+                $updt = Log::find($toupdatedata->id);
+                $updt->pemakaian_air = $pemakaian;
+                $updt->status = $status;
+                $updt->created_at = date('Y-m-d H:i:s');
+                $updt->save();
+                return response()->json(['status'=>'Updated', 'message'=>'nilai air berubah', 'data'=>$toupdatedata]);
+                
+            }else{
+                $toupdatedata = Log::where('user_id', $request->user_id)->latest()->get()[0];
+                $updt = Log::find($toupdatedata->id);
+                $updt->created_at = date('Y-m-d H:i:s');
+                $updt->save();
+                return response()->json(['status'=>'Not modified', 'message'=>'Data less or same as previous']);
+                die;
+            }
+            
+        }elseif($pemakaian > 0){
+            // input data baru
+            $data = [
+                'pemakaian_air'=>$request->query('pemakaian_air'),
+                'status'=>$request->query('status'),
+                'user_id'=>$request->query('user_id'),
+            ];
+            
+            Log::create($data);
+            return response()->json(['status'=>'Ok', 'data'=>$data]);
+        }else{
+            // $toupdatedata = Log::where('user_id', $request->user_id)->latest()->get()[0];
+            // $updt = Log::find($toupdatedata->id);
+            // $updt->created_at = date('Y-m-d H:i:s');
+            // $updt->save();
+            return response()->json(['status'=>'Not modified', 'message'=>'Data less than 1']);
+                die;
+        } 
+        
     }
 
     public function view_log()
