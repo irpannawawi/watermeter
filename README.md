@@ -1,4 +1,4 @@
-# Smart Wather IOT (ADLI)
+# Smart Water IOT (ADLI)
 
 This is smartwather iot project.
 
