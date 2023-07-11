@@ -23,13 +23,25 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $data = [
+            'email' => $request->email,
+            'password' => $request->password
+        ];
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        if (Auth::attempt($data)) {
+            return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'You success login');
+        } else {
+            return back()->with('failed', 'Failed to login');
+        }
     }
 
     /**
@@ -43,6 +55,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login')->with('success', 'You have been logged out');
     }
 }
