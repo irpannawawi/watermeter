@@ -31,6 +31,13 @@ Install dependencies
   composer Install
 ```
 
+Install node assets
+
+```bash
+  npm install
+  npm run build
+```
+
 Optimize
 
 ```bash
